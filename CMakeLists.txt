@@ -10,6 +10,13 @@ else()
     ucm_set_runtime(DYNAMIC)
 endif()
 
+# Basic CMake build settings
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING
+        "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS  "Debug;Release;RelWithDebInfo;MinSizeRel")
+endif()
+
 # The following compiler option are only meant for GCC:
 if (CMAKE_COMPILER_IS_GNUCC)
     # the following is optimization micromanagement that made better code for x86
@@ -45,7 +52,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 option (BUILD_SHARED_LIBS "Build CharLS with shared libraries." OFF)
-option (BUILD_TESTING     "Build tests"                         ON)
+option (BUILD_TESTING     "Build tests"                         OFF)
 
 if (WIN32)
    if (BUILD_SHARED_LIBS)
@@ -65,12 +72,11 @@ set_target_properties(CharLS PROPERTIES
                              VERSION ${CHARLS_LIB_MAJOR_VERSION}.${CHARLS_LIB_MINOR_VERSION}
                              SOVERSION ${CHARLS_LIB_MAJOR_VERSION})
 
-install (TARGETS CharLS RUNTIME DESTINATION bin
-                        LIBRARY DESTINATION lib${LIB_SUFFIX}
+install (TARGETS CharLS LIBRARY DESTINATION lib${LIB_SUFFIX}
                         ARCHIVE DESTINATION lib${LIB_SUFFIX})
 install (FILES ${charls_PUBLIC_HEADERS} DESTINATION include/CharLS)
 
 if (BUILD_TESTING)
   add_executable(charlstest test/main.cpp test/gettime.cpp test/util.cpp test/bitstreamdamage.cpp test/compliance.cpp test/performance.cpp test/dicomsamples.cpp)
-  target_link_libraries (charlstest CharLS)
+  target_link_libraries(charlstest CharLS)
 endif ()
