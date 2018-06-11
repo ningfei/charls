@@ -30,3 +30,6 @@ x64/
 
 # Ignore Coverity build folder
 cov-int/
+
+/build/
+
