@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 2.6)
 project(charls)
 
+# Option Choose whether to use static runtime
+include(ucm.cmake)
+option(USE_STATIC_RUNTIME "Use static runtime" ON)
+if(USE_STATIC_RUNTIME)
+    ucm_set_runtime(STATIC)
+else()
+    ucm_set_runtime(DYNAMIC)
+endif()
+
 # The following compiler option are only meant for GCC:
 if (CMAKE_COMPILER_IS_GNUCC)
     # the following is optimization micromanagement that made better code for x86
@@ -19,7 +28,7 @@ ENDIF ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Define clang C++ defines for both Debug and Release
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Weverything")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++98-compat")            # Ignore, CharLS 2.x targets C++14, ignore C++98 compatibility. 
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++98-compat")            # Ignore, CharLS 2.x targets C++14, ignore C++98 compatibility.
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++98-compat-pedantic")   # Ignore, CharLS 2.x targets C++14, ignore C++98 compatibility.
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-conversion")         # Ignore, would just introduce ugly static_asserts.
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-padded")                  # Ignore, padding optimization is not needed.
